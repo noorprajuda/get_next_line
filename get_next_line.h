@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 07:08:09 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/02 11:47:45 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/08 14:16:44 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@
 # include <limits.h>
 # include <fcntl.h>
 
-typedef struct s_list {
-	void			*content;
+# ifndef BUF_SIZE
+#  define BUF_SIZE 42
+# endif
+
+typedef struct s_list
+{
+	char			*content;
 	struct s_list	*next;
 }	t_list;
 
