@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 11:44:43 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/11 23:16:23 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/12 01:11:40 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	ft_cleantmp(t_list **tmp)
 	t_list	*last;
 	size_t	i;
 	size_t	j;
-	size_t	r;
 
 	last = ft_lastlst(*tmp);
 	if (!tmp || !last || !last->content)
@@ -62,9 +61,7 @@ void	ft_cleantmp(t_list **tmp)
 		i++;
 	if (last->content && last->content[i] == '\n')
 		i++;
-
-	r = ft_strlen(last->content + i);
-	cln->content = malloc(sizeof(char) * (r + 1));
+	cln->content = malloc(sizeof(char) * (ft_strlen(last->content + i) + 1));
 	if (cln->content == ((void *) 0))
 	{
 		free(cln);
@@ -74,6 +71,7 @@ void	ft_cleantmp(t_list **tmp)
 	while (last->content[i])
 		cln->content[j++] = last->content[i++];
 	cln->content[j] = '\0';
+	cln->next = ((void *) 0);
 	ft_freetmp(tmp);
 	*tmp = cln;
 }

@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/12 00:28:09 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/12 00:42:13 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void	ft_parseline(t_list *tmp, char **line)
 	while (tmp)
 	{
 		i = 0;
-		while (tmp && tmp->content[i] != '\n')
+		while (tmp->content[i] != '\0' && tmp->content[i] != '\n')
 			(*line)[j++] = tmp->content[i++];
 		if (tmp && tmp->content[i] == '\n')
 		{
