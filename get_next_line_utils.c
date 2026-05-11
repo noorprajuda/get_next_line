@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 11:44:43 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/11 05:07:00 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/11 20:53:15 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,38 +42,33 @@ void	ft_cleantmp(t_list **tmp)
 	size_t	i;
 	size_t	j;
 
-	if (!tmp)
-		return ;
 	cln = malloc(sizeof(t_list));
-	if (!cln)
+	if (!tmp || !cln)
 		return ;
 	cln->next = ((void *) 0);
-	last = ft_lastlst(tmp);
+	last = ft_lastlst(*tmp);
 	i = 0;
 	while (last->content[i] && last->content[i] != '\n')
 		i++;
-	if (last->content[i] && last->content[i] == '\n')
+	if (last->content && last->content[i] == '\n')
 		i++;
 	cln->content = malloc(sizeof(char) * (ft_strlen(last->content) - i + 1));
 	if (cln->content == ((void *) 0))
 		return ;
 	j = 0;
 	while (last->content[i])
-	{
-		cln->content[j] = last->content[i];
-		j++;
-		i++;
-	}
+		cln->content[j++] = last->content[i++];
 	cln->content[j] = '\0';
-	ft_freetmp(*tmp);
+	ft_freetmp(tmp);
 	*tmp = cln;
 }
+
 void	ft_freetmp(t_list **tmp)
 {
 	t_list	*crn;
 	t_list	*nxt;
 
-	crn = tmp;
+	crn = *tmp;
 	while (crn)
 	{
 		free(crn->content);
@@ -81,9 +76,10 @@ void	ft_freetmp(t_list **tmp)
 		free(crn);
 		crn = nxt;
 	}
+	*tmp = ((void *) 0);
 }
 
-int ft_strlen(char *s)
+int	ft_strlen(char *s)
 {
 	int	i;
 
@@ -92,14 +88,14 @@ int ft_strlen(char *s)
 		i ++;
 	return (i);
 }
+
 int	ft_findnl(t_list *tmp)
 {
 	t_list	*crn;
 	int		i;
 
 	if (!tmp)
-		return ;
-
+		return (0);
 	crn = ft_lastlst(tmp);
 	i = 0;
 	while (crn->content[i])

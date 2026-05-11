@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/11 04:58:37 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/11 19:35:15 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*get_next_line(int fd)
 	ft_cleantmp(&tmp);
 	if (line[0] == '\0')
 	{
-		ft_freetmp(tmp);
+		ft_freetmp(&tmp);
 		tmp = ((void *) 0);
 		free(line);
 		return ((void *) 0);
@@ -38,7 +38,7 @@ char	*get_next_line(int fd)
 void	ft_putnode(int fd, t_list **tmp)
 {
 	char	*buf;
-	int		*read_ptr;
+	int		read_ptr;
 
 	read_ptr = 1;
 	while (!ft_findnl(*tmp) && read_ptr != 0)
@@ -46,14 +46,14 @@ void	ft_putnode(int fd, t_list **tmp)
 		buf = malloc(sizeof(char) * (BUF_SIZE + 1));
 		if (buf == ((void *) 0))
 			return ;
-		*read_ptr = read(fd, buf, BUF_SIZE);
+		read_ptr = read(fd, buf, BUF_SIZE);
 		if ((*tmp == ((void *) 0) && read_ptr == 0) || read_ptr == -1)
 		{
 			free(buf);
 			return ;
 		}
 		ft_addnode(tmp, buf, read_ptr);
-		buf[*read_ptr] = '\0';
+		buf[read_ptr] = '\0';
 	}
 }
 
@@ -113,26 +113,11 @@ void	ft_parseline(t_list *tmp, char **line)
 	while (tmp)
 	{
 		i = 0;
-		while (tmp && tmp->content != '\n')
+		while (tmp && tmp->content[i] != '\n')
 			(*line)[j++] = tmp->content[i++];
-		if (tmp->content != '\n')
+		if (tmp->content[i] != '\n')
 			(*line)[j++] = tmp->content[i];
 		tmp = tmp->next;
 	}
-	line[j] = '\0';
-}
-
-int	main(void)
-{
-	int		fd;
-	char	*line;
-
-	fd = open("./loremimpsum.txt", O_RDONLY);
-	while (line != ((void *) 0))
-	{
-		line = get_next_line(fd);
-		printf("%s", line);
-		free(line);
-	}
-
+	(*line)[j] = '\0';
 }
