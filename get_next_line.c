@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/11 23:05:07 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/12 00:28:09 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ t_list	*ft_lastlst(t_list *tmp)
 {
 	t_list	*current;
 
+	if (!tmp)
+		return ((void *) 0);
 	current = tmp;
 	while (current && current->next)
 	{
