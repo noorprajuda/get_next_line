@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/11 19:35:15 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/11 23:05:07 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,24 +66,24 @@ void	ft_addnode(t_list **tmp, char *buf, int read_ptr)
 	newnode = malloc(sizeof(t_list));
 	if (!newnode)
 		return ;
-	newnode->next = ((void *) 0);
 	newnode->content = malloc (sizeof(char) * (read_ptr + 1));
 	if (!newnode->content)
-		return ;
-	i = 0;
-	while (buf[i] && i < read_ptr)
 	{
+		free(newnode);
+		return ;
+	}
+	i = -1;
+	while (++i < read_ptr)
 		newnode->content[i] = buf[i];
-		i++;
-	}
 	newnode->content[i] = '\0';
-	if (*tmp == ((void *) 0))
-	{
+	newnode->next = ((void *) 0);
+	if (!*tmp)
 		*tmp = newnode;
-		return ;
+	else
+	{
+		last = ft_lastlst(*tmp);
+		last->next = newnode;
 	}
-	last = ft_lastlst(*tmp);
-	last->next = newnode;
 }
 
 t_list	*ft_lastlst(t_list *tmp)
@@ -91,7 +91,7 @@ t_list	*ft_lastlst(t_list *tmp)
 	t_list	*current;
 
 	current = tmp;
-	if (current && current->next)
+	while (current && current->next)
 	{
 		current = current->next;
 	}
@@ -115,9 +115,13 @@ void	ft_parseline(t_list *tmp, char **line)
 		i = 0;
 		while (tmp && tmp->content[i] != '\n')
 			(*line)[j++] = tmp->content[i++];
-		if (tmp->content[i] != '\n')
+		if (tmp && tmp->content[i] == '\n')
+		{
 			(*line)[j++] = tmp->content[i];
-		tmp = tmp->next;
+			tmp = ((void *) 0);
+		}
+		else
+			tmp = tmp->next;
 	}
 	(*line)[j] = '\0';
 }
