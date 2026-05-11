@@ -6,88 +6,107 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 11:44:43 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/08 14:22:22 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/11 05:07:00 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_next_line(int fd)
+void	ft_createline(t_list *tmp, char **line)
 {
-	static t_list	*tmp;
-	char			*line;
+	int	i;
+	int	len;
 
-	if (fd < 0 || read(fd, &line, 0) < 0 || BUF_SIZE < 0)
-		return ((void *) 0);
-	line = ((void *) 0);
-	ft_putnode(fd, &tmp);
-	if (tmp == (void *) 0)
-		return ((void *) 0);
-	parse_line(tmp, &line);
-	clean_tmp(&tmp);
-	if (line[0] == '\0')
+	if (!tmp)
+		return ;
+	len = 0;
+	while (tmp)
 	{
-		free_tmp(tmp);
-		tmp = ((void *) 0);
-		free(line);
-		return ((void *) 0);
-	}
-	return (line);
-}
-
-void	ft_putnode(int fd, t_list **tmp)
-{
-	char	*buf;
-	int		*read_ptr;
-
-	read_ptr = 1;
-	while (!find_newline(*tmp) && read_ptr != 0)
-	{
-		buf = malloc(sizeof(char) * (BUF_SIZE + 1));
-		if (buf == ((void *) 0))
-			return ;
-		*read_ptr = read(fd, buf, BUF_SIZE);
-		if ((*tmp == ((void *) 0) && read_ptr == 0) || read_ptr == -1)
+		i = 0;
+		while (tmp->content[i] && tmp->content[i] != '\n')
 		{
-			free(buf);
-			return ;
+			len++;
+			i++;
 		}
-		ft_addnode(tmp, buf, read_ptr);
-		buf[*read_ptr] = '\0';
+		if (tmp->content[i] == '\n')
+			len++;
+		tmp = tmp->next;
 	}
+	line = malloc(sizeof(char) * (len + 1));
 }
 
-void	ft_addnode(t_list **tmp, char *buf, int read_ptr)
+void	ft_cleantmp(t_list **tmp)
 {
-	t_list	*newnode;
+	t_list	*cln;
 	t_list	*last;
-	int		i;
+	size_t	i;
+	size_t	j;
 
-	newnode = malloc(sizeof(t_list));
-	if (!newnode)
+	if (!tmp)
 		return ;
-	newnode->next = ((void *) 0);
-	newnode->content = malloc (sizeof(char) * (read_ptr + 1));
-	if (!newnode->content)
+	cln = malloc(sizeof(t_list));
+	if (!cln)
 		return ;
+	cln->next = ((void *) 0);
+	last = ft_lastlst(tmp);
 	i = 0;
-	while (buf[i] && i < read_ptr)
+	while (last->content[i] && last->content[i] != '\n')
+		i++;
+	if (last->content[i] && last->content[i] == '\n')
+		i++;
+	cln->content = malloc(sizeof(char) * (ft_strlen(last->content) - i + 1));
+	if (cln->content == ((void *) 0))
+		return ;
+	j = 0;
+	while (last->content[i])
 	{
-		newnode->content[i] = buf[i];
+		cln->content[j] = last->content[i];
+		j++;
 		i++;
 	}
-	newnode->content[i] = '\0';
-	if (*tmp == ((void *) 0))
+	cln->content[j] = '\0';
+	ft_freetmp(*tmp);
+	*tmp = cln;
+}
+void	ft_freetmp(t_list **tmp)
+{
+	t_list	*crn;
+	t_list	*nxt;
+
+	crn = tmp;
+	while (crn)
 	{
-		*tmp = newnode;
-		return ;
+		free(crn->content);
+		nxt = crn->next;
+		free(crn);
+		crn = nxt;
 	}
-	last = ft_lastlst(*tmp);
-	last->next = newnode;
 }
 
-t_list	*ft_lastlst(t_list *tmp)
+int ft_strlen(char *s)
 {
-	t_list	current;
+	int	i;
 
+	i = 0;
+	while (s[i])
+		i ++;
+	return (i);
+}
+int	ft_findnl(t_list *tmp)
+{
+	t_list	*crn;
+	int		i;
+
+	if (!tmp)
+		return ;
+
+	crn = ft_lastlst(tmp);
+	i = 0;
+	while (crn->content[i])
+	{
+		if (crn->content[i] == '\n')
+			return (1);
+		i++;
+	}
+	return (0);
 }
