@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 11:44:43 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/12 01:11:40 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/12 02:38:53 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,9 @@ void	ft_createline(t_list *tmp, char **line)
 {
 	int	i;
 	int	len;
-	int	nl;
 
-	if (!tmp)
-		return ;
 	len = 0;
-	nl = 0;
-	while (tmp && !nl)
+	while (tmp)
 	{
 		i = 0;
 		while (tmp->content[i] && tmp->content[i] != '\n')
@@ -33,10 +29,9 @@ void	ft_createline(t_list *tmp, char **line)
 		if (tmp->content[i] == '\n')
 		{
 			len++;
-			nl = 1;
+			break ;
 		}
-		else
-			tmp = tmp->next;
+		tmp = tmp->next;
 	}
 	*line = malloc(sizeof(char) * (len + 1));
 	if (!*line)
@@ -47,26 +42,21 @@ void	ft_cleantmp(t_list **tmp)
 {
 	t_list	*cln;
 	t_list	*last;
-	size_t	i;
-	size_t	j;
+	int		i;
+	int		j;
 
 	last = ft_lastlst(*tmp);
-	if (!tmp || !last || !last->content)
+	if (!tmp || !last)
 		return ;
 	cln = malloc(sizeof(t_list));
-	if (!cln)
-		return ;
 	i = 0;
 	while (last->content[i] && last->content[i] != '\n')
 		i++;
-	if (last->content && last->content[i] == '\n')
+	if (last->content[i] == '\n')
 		i++;
-	cln->content = malloc(sizeof(char) * (ft_strlen(last->content + i) + 1));
-	if (cln->content == ((void *) 0))
-	{
-		free(cln);
-		return ;
-	}
+	cln->content = malloc(ft_strlen(last->content + i) + 1);
+	if (!cln || !cln->content)
+		return (free(cln));
 	j = 0;
 	while (last->content[i])
 		cln->content[j++] = last->content[i++];
