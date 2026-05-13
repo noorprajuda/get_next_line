@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 19:04:59 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/13 10:46:40 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/13 13:11:00 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ int	main(void)
 	}
 	close(fd);
 	printf("Total lines read: %d\n\n", line_count);
-	/* Test 2: Read from simple.txt */
-	printf("Test 2: Reading from simple.txt\n");
-	fd = open("./simple.txt", O_RDONLY);
+	/* Test 2: Read from test.txt */
+	printf("Test 2: Reading from test.txt\n");
+	fd = open("./test.txt", O_RDONLY);
 	if (fd < 0)
 	{
-		printf("Error: Could not open simple.txt\n");
+		printf("Error: Could not open test.txt\n");
 		return (1);
 	}
 	line_count = 0;

@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/13 12:37:16 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/13 12:45:00 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*get_next_line(int fd)
 	static t_list	*tmp;
 	char			*line;
 
-	if (fd < 0 || read(fd, &line, 0) < 0 || BUF_SIZE < 0)
+	if (fd < 0 || read(fd, &line, 0) < 0 || int	BUFFER_SIZE < 0)
 		return (NULL);
 	if (ft_putnode(fd, &tmp) < 0)
 		return (NULL);
@@ -45,13 +45,13 @@ int	ft_putnode(int fd, t_list **tmp)
 	read_ptr = 1;
 	while (!ft_findnl(*tmp) && read_ptr != 0)
 	{
-		buf = malloc(sizeof(char) * (BUF_SIZE + 1));
+		buf = malloc(sizeof(char) * (int	BUFFER_SIZE + 1));
 		if (!buf)
 		{
 			perror("malloc failed");
 			return (-1);
 		}
-		read_ptr = read(fd, buf, BUF_SIZE);
+		read_ptr = read(fd, buf, int	BUFFER_SIZE);
 		if ((*tmp == NULL && read_ptr == 0) || read_ptr == -1)
 		{
 			free(buf);

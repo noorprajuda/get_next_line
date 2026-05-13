@@ -1,0 +1,38 @@
+main.c
+simple.txt
+Makefile
+loremipsum.txt
+
+# Object files
+*.o
+
+# Executable binaries
+*.exe
+*.out
+*.app
+*.bin
+*.elf
+
+# IDE-specific files
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs (CLion, IntelliJ, etc.)
+.idea/
+*.iml
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.vcxproj.user
+
+# Eclipse
+.project
+.cproject
+.settings/
+
+# Xcode
+DerivedData/
+*.xcworkspace/
