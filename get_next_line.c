@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/12 00:42:13 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/13 12:37:16 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,26 @@ char	*get_next_line(int fd)
 	char			*line;
 
 	if (fd < 0 || read(fd, &line, 0) < 0 || BUF_SIZE < 0)
-		return ((void *) 0);
-	line = ((void *) 0);
+		return (NULL);
+	if (ft_putnode(fd, &tmp) < 0)
+		return (NULL);
+	if (tmp == NULL)
+		return (NULL);
+	line = NULL;
 	ft_putnode(fd, &tmp);
-	if (tmp == (void *) 0)
-		return ((void *) 0);
 	ft_parseline(tmp, &line);
 	ft_cleantmp(&tmp);
 	if (line[0] == '\0')
 	{
 		ft_freetmp(&tmp);
-		tmp = ((void *) 0);
+		tmp = NULL;
 		free(line);
-		return ((void *) 0);
+		return (NULL);
 	}
 	return (line);
 }
 
-void	ft_putnode(int fd, t_list **tmp)
+int	ft_putnode(int fd, t_list **tmp)
 {
 	char	*buf;
 	int		read_ptr;
@@ -44,46 +46,48 @@ void	ft_putnode(int fd, t_list **tmp)
 	while (!ft_findnl(*tmp) && read_ptr != 0)
 	{
 		buf = malloc(sizeof(char) * (BUF_SIZE + 1));
-		if (buf == ((void *) 0))
-			return ;
+		if (!buf)
+		{
+			perror("malloc failed");
+			return (-1);
+		}
 		read_ptr = read(fd, buf, BUF_SIZE);
-		if ((*tmp == ((void *) 0) && read_ptr == 0) || read_ptr == -1)
+		if ((*tmp == NULL && read_ptr == 0) || read_ptr == -1)
 		{
 			free(buf);
-			return ;
+			return (-1);
 		}
 		ft_addnode(tmp, buf, read_ptr);
 		buf[read_ptr] = '\0';
+		free(buf);
 	}
+	return (0);
 }
 
-void	ft_addnode(t_list **tmp, char *buf, int read_ptr)
+int	ft_addnode(t_list **tmp, char *buf, int read_ptr)
 {
 	t_list	*newnode;
-	t_list	*last;
 	int		i;
 
 	newnode = malloc(sizeof(t_list));
 	if (!newnode)
-		return ;
+		return (-1);
 	newnode->content = malloc (sizeof(char) * (read_ptr + 1));
 	if (!newnode->content)
 	{
 		free(newnode);
-		return ;
+		return (-1);
 	}
 	i = -1;
 	while (++i < read_ptr)
 		newnode->content[i] = buf[i];
 	newnode->content[i] = '\0';
-	newnode->next = ((void *) 0);
+	newnode->next = NULL;
 	if (!*tmp)
 		*tmp = newnode;
 	else
-	{
-		last = ft_lastlst(*tmp);
-		last->next = newnode;
-	}
+		ft_lastlst(*tmp)->next = newnode;
+	return (0);
 }
 
 t_list	*ft_lastlst(t_list *tmp)
@@ -91,14 +95,13 @@ t_list	*ft_lastlst(t_list *tmp)
 	t_list	*current;
 
 	if (!tmp)
-		return ((void *) 0);
+		return (NULL);
 	current = tmp;
 	while (current && current->next)
 	{
 		current = current->next;
 	}
 	return (current);
-
 }
 
 void	ft_parseline(t_list *tmp, char **line)
@@ -120,7 +123,7 @@ void	ft_parseline(t_list *tmp, char **line)
 		if (tmp && tmp->content[i] == '\n')
 		{
 			(*line)[j++] = tmp->content[i];
-			tmp = ((void *) 0);
+			tmp = NULL;
 		}
 		else
 			tmp = tmp->next;

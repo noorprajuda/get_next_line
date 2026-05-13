@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 07:08:09 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/11 19:28:13 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:08:53 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <ctype.h>
-# include <string.h>
 # include <stdint.h>
 # include <limits.h>
 # include <fcntl.h>
@@ -33,8 +32,8 @@ typedef struct s_list
 }	t_list;
 
 char	*get_next_line(int fd);
-void	ft_putnode(int fd, t_list **tmp);
-void	ft_addnode(t_list **tmp, char *buf, int read_ptr);
+int		ft_putnode(int fd, t_list **tmp);
+int	ft_addnode(t_list **tmp, char *buf, int read_ptr);
 t_list	*ft_lastlst(t_list *tmp);
 void	ft_parseline(t_list *tmp, char **line);
 void	ft_createline(t_list *tmp, char **line);

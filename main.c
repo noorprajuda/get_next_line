@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 19:04:59 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/13 10:32:37 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/13 10:46:40 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	main(void)
 	}
 	line_count = 0;
 	line = get_next_line(fd);
-	while (line != ((void *) 0))
+	while (line != NULL)
 	{
 		line_count++;
 		printf("Line %d: %s", line_count, line);
@@ -48,7 +48,7 @@ int	main(void)
 	}
 	line_count = 0;
 	line = get_next_line(fd);
-	while (line != ((void *) 0))
+	while (line != NULL)
 	{
 		line_count++;
 		printf("Line %d: %s", line_count, line);
