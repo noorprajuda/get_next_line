@@ -105,38 +105,25 @@ cc -Wall -Wextra -Werror -D BUFFFER_SIZE=100 *.c
 ---
 
 ## Example Usage
+create a `test.txt` file
+```txt
+This is the first line.
+And this is the second line.
+But this is the third line.
 
+```
+create the main function `main.c` to test
 ```c
 #include "get_next_line.h"
 
-int main(void)
+int	main(void)
 {
 	int		fd;
 	char	*line;
 	int		line_count;
 
 	printf("=== Testing get_next_line ===\n\n");
-	printf("Test 1: Reading from loremipsum.txt\n");
-	//Test 1: Read from loremipsum.txt 
-	fd = open("./loremipsum.txt", O_RDONLY);
-	if (fd < 0)
-	{
-		printf("Error: Could not open loremipsum.txt\n");
-		return (1);
-	}
-	line_count = 0;
-	line = get_next_line(fd);
-	while (line != NULL)
-	{
-		line_count++;
-		printf("Line %d: %s", line_count, line);
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
-	printf("Total lines read: %d\n\n", line_count);
-	/* Test 2: Read from test.txt */
-	printf("Test 2: Reading from test.txt\n");
+	printf("Reading from test.txt\n");
 	fd = open("./test.txt", O_RDONLY);
 	if (fd < 0)
 	{
@@ -153,20 +140,39 @@ int main(void)
 		line = get_next_line(fd);
 	}
 	close(fd);
-	printf("Total lines read: %d\n\n", line_count);
-	/* Test 3: Handle non-existent file */
-	printf("Test 3: Attempting to read non-existent file\n");
-	fd = open("./nonexistent.txt", O_RDONLY);
-	if (fd < 0)
-	{
-		printf("Error: Could not open nonexistent.txt (Expected behavior)\n");
-		return (0);
-	}
-	close(fd);
-	printf("\n=== All tests completed ===\n");
+	printf("\nTotal lines read: %d\n\n", line_count);
+	printf("\n=== Test completed ===\n");
 	return (0);
 }
+
 ```
+compile it
+
+```bash
+cc -Wall -Wextra -Werror -D BUFFFER_SIZE=42 *.c
+
+```
+display
+
+```bash
+./a.out
+
+```
+
+## Tests
+Test with francinette on the shell
+
+```bash
+francinette
+
+```
+Test with francinette --strict on the shell
+
+```bash
+francinette --strict
+
+```
+
 
 ---
 
@@ -195,28 +201,13 @@ The following functions are used in the `get_next_line` project.
 
 - [42 Norm](https://github.com/42School/norminette): coding standard enforced at 42
 
-For a `get_next_line` project, the best references are the ones that help you understand:
-
-* file descriptors
-* `read()`
-* static variables
-* memory management
-* linked lists
-* buffering
-
-Here are strong resources you can include in your `README.md` or use while studying:
-
----
-
-## References
-
 * [Valgrind Documentation](https://valgrind.org/docs/?utm_source=chatgpt.com)
-  For detecting memory leaks.
+  For detecting memory leaks
 
 
 * [42 GitBook - get_next_line Overview](https://42-cursus.gitbook.io/guide/1-rank-01/get_next_line?utm_source=chatgpt.com)
-  Community explanations and project breakdowns.
-* [Francinette](https://github.com/xicodomingues/francinette?utm_source=chatgpt.com) Popular automated tester used by 42 students for project evaluation and leak checking.
+  Explanation and breakdown of get_next_line project
+* [Francinette](https://github.com/xicodomingues/francinette?utm_source=chatgpt.com) Tester for checking get_next_line project
 
 
 ### AI Usage

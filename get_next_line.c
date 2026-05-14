@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/13 13:33:00 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/14 23:15:10 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,20 @@ char	*get_next_line(int fd)
 {
 	static t_list	*tmp;
 	char			*line;
+	char			buf;
 
-	if (fd < 0 || read(fd, &line, 0) < 0 || BUFFER_SIZE < 0)
-		return (NULL);
+	line = NULL;
+	if (fd < 0 || read(fd, &buf, 0) < 0 || BUFFER_SIZE < 0)
+		return (ft_freetmp(&tmp), NULL);
 	if (ft_putnode(fd, &tmp) < 0)
 		return (NULL);
 	if (tmp == NULL)
 		return (NULL);
-	line = NULL;
 	ft_putnode(fd, &tmp);
 	ft_parseline(tmp, &line);
 	ft_cleantmp(&tmp);
 	if (line[0] == '\0')
-	{
-		ft_freetmp(&tmp);
-		tmp = NULL;
-		free(line);
-		return (NULL);
-	}
+		return (ft_freetmp(&tmp), free(line), NULL);
 	return (line);
 }
 
@@ -47,18 +43,16 @@ int	ft_putnode(int fd, t_list **tmp)
 	{
 		buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!buf)
-		{
-			perror("malloc failed");
-			return (-1);
-		}
+			return (perror("malloc failed"), -1);
 		read_ptr = read(fd, buf, BUFFER_SIZE);
 		if ((*tmp == NULL && read_ptr == 0) || read_ptr == -1)
 		{
 			free(buf);
 			return (-1);
 		}
-		ft_addnode(tmp, buf, read_ptr);
 		buf[read_ptr] = '\0';
+		if (ft_addnode(tmp, buf, read_ptr) < 0)
+			return (free (buf), -1);
 		free(buf);
 	}
 	return (0);
