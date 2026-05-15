@@ -6,7 +6,7 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 06:01:20 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/14 23:15:10 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/15 04:05:00 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,20 @@ char	*get_next_line(int fd)
 	if (fd < 0 || read(fd, &buf, 0) < 0 || BUFFER_SIZE < 0)
 		return (ft_freetmp(&tmp), NULL);
 	if (ft_putnode(fd, &tmp) < 0)
+		return (ft_freetmp(&tmp), NULL);
+	if (!tmp)
 		return (NULL);
-	if (tmp == NULL)
-		return (NULL);
-	ft_putnode(fd, &tmp);
 	ft_parseline(tmp, &line);
-	ft_cleantmp(&tmp);
-	if (line[0] == '\0')
+	if (!line)
+		return (ft_freetmp(&tmp), NULL);
+	if (ft_cleantmp(&tmp) == 0)
 		return (ft_freetmp(&tmp), free(line), NULL);
+	if (line[0] == '\0')
+	{
+		ft_freetmp(&tmp);
+		free(line);
+		return (NULL);
+	}
 	return (line);
 }
 
@@ -37,28 +43,29 @@ int	ft_putnode(int fd, t_list **tmp)
 {
 	char	*buf;
 	int		read_ptr;
+	t_list	*last;
 
 	read_ptr = 1;
-	while (!ft_findnl(*tmp) && read_ptr != 0)
+	last = ft_lastlst(*tmp);
+	while (!ft_findnl(last) && read_ptr != 0)
 	{
 		buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!buf)
-			return (perror("malloc failed"), -1);
-		read_ptr = read(fd, buf, BUFFER_SIZE);
-		if ((*tmp == NULL && read_ptr == 0) || read_ptr == -1)
-		{
-			free(buf);
 			return (-1);
-		}
+		read_ptr = read(fd, buf, BUFFER_SIZE);
+		if (read_ptr == -1)
+			return (free(buf), -1);
+		if (read_ptr == 0)
+			return (free(buf), 0);
 		buf[read_ptr] = '\0';
-		if (ft_addnode(tmp, buf, read_ptr) < 0)
-			return (free (buf), -1);
+		if (ft_addnode(tmp, &last, buf, read_ptr) < 0)
+			return (free(buf), -1);
 		free(buf);
 	}
 	return (0);
 }
 
-int	ft_addnode(t_list **tmp, char *buf, int read_ptr)
+int	ft_addnode(t_list **tmp, t_list **last, char *buf, int read_ptr)
 {
 	t_list	*newnode;
 	int		i;
@@ -66,61 +73,69 @@ int	ft_addnode(t_list **tmp, char *buf, int read_ptr)
 	newnode = malloc(sizeof(t_list));
 	if (!newnode)
 		return (-1);
-	newnode->content = malloc (sizeof(char) * (read_ptr + 1));
+	newnode->content = malloc(sizeof(char) * (read_ptr + 1));
 	if (!newnode->content)
-	{
-		free(newnode);
-		return (-1);
-	}
+		return (free(newnode), -1);
 	i = -1;
 	while (++i < read_ptr)
 		newnode->content[i] = buf[i];
 	newnode->content[i] = '\0';
 	newnode->next = NULL;
 	if (!*tmp)
+	{
 		*tmp = newnode;
+		*last = newnode;
+	}
 	else
-		ft_lastlst(*tmp)->next = newnode;
+	{
+		(*last)->next = newnode;
+		*last = newnode;
+	}
 	return (0);
 }
 
 t_list	*ft_lastlst(t_list *tmp)
 {
-	t_list	*current;
-
 	if (!tmp)
 		return (NULL);
-	current = tmp;
-	while (current && current->next)
-	{
-		current = current->next;
-	}
-	return (current);
+	while (tmp && tmp->next)
+		tmp = tmp->next;
+	return (tmp);
 }
 
 void	ft_parseline(t_list *tmp, char **line)
 {
-	int	i;
-	int	j;
+	t_list	*curr;
+	int		len;
+	int		i;
 
-	if (!tmp)
-		return ;
-	ft_createline(tmp, line);
-	if (!*line)
-		return ;
-	j = 0;
-	while (tmp)
+	len = 0;
+	curr = tmp;
+	while (curr)
 	{
 		i = 0;
-		while (tmp->content[i] != '\0' && tmp->content[i] != '\n')
-			(*line)[j++] = tmp->content[i++];
-		if (tmp && tmp->content[i] == '\n')
+		while (curr->content[i] && curr->content[i] != '\n')
 		{
-			(*line)[j++] = tmp->content[i];
-			tmp = NULL;
+			i++;
+			len++;
 		}
-		else
-			tmp = tmp->next;
+		if (curr->content[i] == '\n' && len++)
+			break ;
+		curr = curr->next;
 	}
-	(*line)[j] = '\0';
+	*line = malloc(sizeof(char) * (len + 1));
+	if (!*line)
+		return ;
+	len = 0;
+	while (tmp && !(i = 0))
+	{
+		while (tmp->content[i] && tmp->content[i] != '\n')
+			(*line)[len++] = tmp->content[i++];
+		if (tmp->content[i] == '\n')
+			(*line)[len++] = tmp->content[i];
+		if (tmp->content[i] == '\n')
+			break ;
+		tmp = tmp->next;
+	}
+	(*line)[len] = '\0';
 }

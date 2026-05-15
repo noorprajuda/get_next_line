@@ -6,64 +6,39 @@
 /*   By: mnoorpra <mnoorpra@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 11:44:43 by mnoorpra          #+#    #+#             */
-/*   Updated: 2026/05/13 12:36:00 by mnoorpra         ###   ########.fr       */
+/*   Updated: 2026/05/15 04:05:00 by mnoorpra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	ft_createline(t_list *tmp, char **line)
-{
-	int	i;
-	int	len;
-
-	len = 0;
-	while (tmp)
-	{
-		i = 0;
-		while (tmp->content[i] && tmp->content[i] != '\n')
-		{
-			len++;
-			i++;
-		}
-		if (tmp->content[i] == '\n')
-		{
-			len++;
-			break ;
-		}
-		tmp = tmp->next;
-	}
-	*line = malloc(sizeof(char) * (len + 1));
-	if (!*line)
-		return ;
-}
-
-void	ft_cleantmp(t_list **tmp)
+int	ft_cleantmp(t_list **tmp)
 {
 	t_list	*cln;
-	t_list	*last;
+	t_list	*crn;
 	int		i;
 	int		j;
 
-	last = ft_lastlst(*tmp);
-	if (!tmp || !last)
-		return ;
-	cln = malloc(sizeof(t_list));
+	if (!tmp || !*tmp)
+		return (1);
+	crn = *tmp;
+	while (crn && !ft_findnl(crn) && crn->next)
+		crn = crn->next;
 	i = 0;
-	while (last->content[i] && last->content[i] != '\n')
+	while (crn->content[i] && crn->content[i] != '\n')
 		i++;
-	if (last->content[i] == '\n')
+	if (crn->content[i] == '\n')
 		i++;
-	cln->content = malloc(ft_strlen(last->content + i) + 1);
-	if (!cln || !cln->content)
-		return (free(cln));
+	if (crn->content[i] == '\0')
+		return (cln = crn->next, crn->next = NULL, ft_freetmp(tmp), *tmp = cln, 1);
+	cln = malloc(sizeof(t_list));
+	if (!cln || !(cln->content = malloc(ft_strlen(crn->content + i) + 1)))
+		return (free(cln), 0);
 	j = 0;
-	while (last->content[i])
-		cln->content[j++] = last->content[i++];
+	while (crn->content[i])
+		cln->content[j++] = crn->content[i++];
 	cln->content[j] = '\0';
-	cln->next = NULL;
-	ft_freetmp(tmp);
-	*tmp = cln;
+	return (cln->next = crn->next, crn->next = NULL, ft_freetmp(tmp), *tmp = cln, 1);
 }
 
 void	ft_freetmp(t_list **tmp)
@@ -71,6 +46,8 @@ void	ft_freetmp(t_list **tmp)
 	t_list	*crn;
 	t_list	*nxt;
 
+	if (!tmp || !*tmp)
+		return ;
 	crn = *tmp;
 	while (crn)
 	{
@@ -90,22 +67,20 @@ int	ft_strlen(char *s)
 		return (0);
 	i = 0;
 	while (s[i])
-		i ++;
+		i++;
 	return (i);
 }
 
 int	ft_findnl(t_list *tmp)
 {
-	t_list	*crn;
-	int		i;
+	int	i;
 
-	if (!tmp)
+	if (!tmp || !tmp->content)
 		return (0);
-	crn = ft_lastlst(tmp);
 	i = 0;
-	while (crn->content[i])
+	while (tmp->content[i])
 	{
-		if (crn->content[i] == '\n')
+		if (tmp->content[i] == '\n')
 			return (1);
 		i++;
 	}
